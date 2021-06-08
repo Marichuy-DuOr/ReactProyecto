@@ -12,7 +12,6 @@ router.get('/', (req, res) => {
 
 router.post('/signup', async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
-    console.log('->' + req.body);
     const { email, password, nombre, apepat, apemat } = req.body;
     const newUser = new User({email, password, nombre, apepat, apemat});
     await newUser.save();
