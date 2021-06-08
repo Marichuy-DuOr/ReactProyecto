@@ -5,7 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import HomeScreen from './HomeScreen';
+import {HomeScreen} from './HomeScreen';
+import {RecipeScreen} from './RecipeScreen';
 import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
@@ -17,9 +18,11 @@ const ProfileStack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const MainTabScreen = () => (
+  
     <Tab.Navigator
       initialRouteName="Home"
       activeColor="#fff"
+      shifting={true}
       >
       <Tab.Screen
         name="Home"
@@ -76,6 +79,13 @@ const HomeStackScreen = ({navigation}) => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
         }} />
+        <HomeStack.Screen name="RecipeScreen" component={RecipeScreen} options={{
+        title:'Receta',
+        headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+        )
+        }} />
+
 </HomeStack.Navigator>
 );
 

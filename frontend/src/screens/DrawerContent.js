@@ -15,10 +15,11 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useAuth} from '../contexts/Auth';
 
 export function DrawerContent(props) {
+    const auth = useAuth();
 
     return(
         <View style={{flex:1}}>
@@ -28,13 +29,13 @@ export function DrawerContent(props) {
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             <Avatar.Image 
                                 source={{
-                                    uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
+                                    uri: 'https://www.clipartmax.com/png/middle/281-2817803_fried-rice-free-icon-food.png'
                                 }}
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>Nombre usuario</Title>
-                                <Caption style={styles.caption}>@email</Caption>
+                                <Title style={styles.title}>{auth.authData.nombre} {auth.authData.apepat}</Title>
+                                <Caption style={styles.caption}>{auth.authData.email}</Caption>
                             </View>
                         </View>
 
@@ -60,7 +61,10 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Home"
-                            onPress={() => {props.navigation.navigate('Home')}}
+                            onPress={() => {
+                                props.navigation.navigate('Home')
+                                // console.log(auth.authData.nombre);
+                            }}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -98,7 +102,7 @@ export function DrawerContent(props) {
                         />
                     )}
                     label="Cerrar sesión"
-                    onPress={() => {signOut()}}
+                    onPress={() => {auth.signOut()}}
                 />
             </Drawer.Section>
         </View>
