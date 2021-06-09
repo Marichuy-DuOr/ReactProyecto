@@ -11,8 +11,9 @@ import {
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useAuth} from '../contexts/Auth';
-import {API_URL} from "@env";
+// import {API_URL} from "@env";
 import {estilos} from './estilos';
+const API_URL = 'http://192.168.100.13:4000/api/';
 
 const background = require("../../assets/sign_up_background.jpg");
 
