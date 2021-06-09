@@ -1,8 +1,12 @@
-import React, {createContext, useState, useContext, useEffect} from 'react';
+import React, {createContext, useState, useContext, useEffect } from 'react';
 // import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {AuthData, authService} from '../services/authService';
+// import {API_URL_SOCKET} from "@env";
+const API_URL_SOCKET = 'http://192.168.100.13:4000/';
+
+const io = require('socket.io-client');
+const socket = io(API_URL_SOCKET);
 
 type AuthContextData = {
   authData?: AuthData;
@@ -28,6 +32,21 @@ const AuthProvider: React.FC = ({children}) => {
     loadStorageData();
   }, []);
 
+  const handleNewMessage = (email) => {
+    
+    var date = new Date().getDate() + '/';
+    date += (new Date().getMonth() + 1) + '/';
+    date += new Date().getFullYear() + ' ';
+    date += new Date().getHours()+ ':';
+    date += new Date().getMinutes() + ':';
+    date += new Date().getSeconds();
+    socket.emit('new-logueo', {
+      email: email,
+      date: date
+    });
+    console.log('emitting new message');
+  }
+
   async function loadStorageData(): Promise<void> {
     try {
       //Try get the data from Async Storage
@@ -45,20 +64,20 @@ const AuthProvider: React.FC = ({children}) => {
   }
 
   const signIn = async (_email: string, _password: string) => {
+    
     //call the service passing credential (email and password).
-    //In a real App this data will be provided by the user from some InputText components.
-    /*const _authData = await authService.signIn(
-      _email,
-      _password,
-    )*/
     await authService.signIn(
       _email,
       _password,
     )
     .then(_authData => {
+      
       //Set the data in the context, so the App can be notified
       //and send the user to the AuthStack
       setAuthData(_authData);
+
+      //Socket 
+      handleNewMessage(_email);
 
       //Persist the data in the Async Storage
       //to be recovered in the next user session.

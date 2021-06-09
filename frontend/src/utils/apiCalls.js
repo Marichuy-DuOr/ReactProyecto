@@ -1,4 +1,5 @@
-import {API_URL} from "@env";
+// import {API_URL} from "@env";
+const API_URL = 'http://192.168.100.13:4000/api/';
 
 // todas las rutas aqui utilizan token
 const apiCalls =  {

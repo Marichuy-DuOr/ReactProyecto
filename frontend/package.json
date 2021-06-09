@@ -32,6 +32,9 @@
     "react-native-screens": "~3.0.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
+    "react-socket-io-hooks": "^1.1.0",
+    "socket.io-client": "^4.1.2",
+    "socketio-hooks": "0.0.7",
     "tcomb-form-native": "^0.6.20",
     "yup": "^0.32.9"
   },
