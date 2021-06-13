@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { 
   SafeAreaView, 
   View, 
@@ -15,33 +15,33 @@ import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
 import { Icon } from 'react-native-elements'
 
-export function HomeScreen({navigation}) {
-    const [recetas, setRecetas] = useState([]);
-    const [receta, setReceta] = useState([]);
+export function IngredientsScreen({navigation}) {
+    const [ingredientes, setIngredientes] = useState([]);
+    const [ingrediente, setIngrediente] = useState([]);
     
     const auth = useAuth();
 
-    const handleRecipeChange = (receta) => {
-      setReceta(receta);
+    const handleIngredienteChange = (ingrediente) => {
+      setIngrediente(ingrediente);
     }
 
-    useEffect(() => {
+    /* useEffect(() => {
       const callApi = async () => {
           await apiCalls.getApiCall('randomSpoonacular', auth.authData.token)
           .then( json => {
-            setRecetas(json.recipes);
+            setIngredientes(json.ingredients);
           })
       }
       callApi();
-    }, []);
+    }, []); */
 
-    const lookRecipes = () => {
-      if (receta) {
-        setRecetas(null);
+    const lookIngredientes = () => {
+      if (ingrediente) {
+        setIngredientes(null);
         const callApi = async () => {
-          await apiCalls.getApiCall(`buscarSpoonacular/${receta}` , auth.authData.token)
+          await apiCalls.getApiCall(`ingredientsSpoonacular/${ingrediente}` , auth.authData.token)
             .then( json => {
-              setRecetas(json.results);
+              setIngredientes(json.results);
             })
         }
         callApi();
@@ -50,18 +50,18 @@ export function HomeScreen({navigation}) {
     }
 
     const Item = ({ item }) => (
-      // Solo usar los campos "id", "title","image" porque las búsquedas solo retornan estos tres campos
+      // Solo usar los campos "id", "name","image" porque las búsquedas solo retornan estos tres campos
       <View style={styles.item}>
         <TouchableOpacity 
           onPress={()=>{
             console.log('El id -> ' + item.id);
             navigation.navigate(
-              'RecipeScreen',
+              'IngredientScreen',
               { id:  item.id},
             );
           }}
         >
-          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.title}>{item.name}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -79,14 +79,14 @@ export function HomeScreen({navigation}) {
               <TextInput
                   style={styles.busqueda}
                   placeholder="Busqueda..." 
-                  onChangeText={handleRecipeChange} 
+                  onChangeText={handleIngredienteChange} 
                   style={{marginVertical:20}}
                   autoCapitalize='none'
                   />
             </View>
             <TouchableHighlight 
               style={styles.icono}
-              onPress={lookRecipes}
+              onPress={lookIngredientes}
               underlayColor = 'transparent'>
                 <View>
                   <Icon name="search" size = {20} color = "#4285F4" />
@@ -95,18 +95,18 @@ export function HomeScreen({navigation}) {
             <View style={{ flex: 1 }}></View>
         </View>
         
-        { recetas ? (
+        { ingredientes ? (
           <>
             <FlatList
-              // si pones data={recetas} tambien hace lo mismo pero marca warning, no se por que jaja que raro 
-              data={Object.values(recetas)} 
+              // si pones data={ingredientes} tambien hace lo mismo pero marca warning, no se por que jaja que raro 
+              data={Object.values(ingredientes)} 
               renderItem={renderItem}
               keyExtractor={item => item.id.toString()}
             />
           </>
           ) : (
             <>
-              <Text>No se encontraron recetas</Text>
+              <Text>No se encontraron ingredientes</Text>
             </>
           )
         }

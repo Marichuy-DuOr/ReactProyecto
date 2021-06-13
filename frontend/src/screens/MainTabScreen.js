@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {HomeScreen} from './HomeScreen';
 import {RecipeScreen} from './RecipeScreen';
+import {IngredientsScreen} from './IngredientsScreen';
+import {IngredientScreen} from './IngredientScreen';
 import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
@@ -14,6 +16,7 @@ import ProfileScreen from './ProfileScreen';
 const HomeStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
+const IngredientesStack = createStackNavigator();
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -55,6 +58,18 @@ const MainTabScreen = () => (
           tabBarColor: '#d02860',
           tabBarIcon: ({ color }) => (
             <Icon name="ios-aperture" color={color} size={26} />
+          ),
+        }}
+      />
+      
+      <Tab.Screen
+        name="IngredientsScreen"
+        component={IngredientesStackScreen}
+        options={{
+          tabBarLabel: 'Ingredientes',
+          tabBarColor: '#DFAD3C',
+          tabBarIcon: ({ color }) => (
+            <Icon name="ios-logo-apple" color={color} size={26} />
           ),
         }}
       />
@@ -123,4 +138,29 @@ const ExploreStackScreen = ({navigation}) => (
           )
           }} />
   </ExploreStack.Navigator>
+  );
+
+const IngredientesStackScreen = ({navigation}) => (
+  <IngredientesStack.Navigator screenOptions={{
+          headerStyle: {
+          backgroundColor: '#DFAD3C',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+          fontWeight: 'bold'
+          }
+      }}>
+          <ExploreStack.Screen name="IngredientsScreen" component={IngredientsScreen} options={{
+            title:'Ingredientes',
+            headerLeft: () => (
+                <Icon.Button name="ios-menu" size={25} backgroundColor="#DFAD3C" onPress={() => navigation.openDrawer()}></Icon.Button>
+            )
+          }} />
+          <ExploreStack.Screen name="IngredientScreen" component={IngredientScreen} options={{
+            title:'Ingrediente',
+            headerLeft: () => (
+                <Icon.Button name="ios-menu" size={25} backgroundColor="#DFAD3C" onPress={() => navigation.openDrawer()}></Icon.Button>
+            )
+          }} />
+  </IngredientesStack.Navigator>
   );

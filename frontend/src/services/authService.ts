@@ -1,6 +1,6 @@
 import jwt_decode from "jwt-decode";
 // import {API_URL} from "@env";
-const API_URL = 'http://192.168.100.13:4000/api/';
+const API_URL = 'http://192.168.1.73:4000/api/';
 
 export type AuthData = {
   token: string;

@@ -19,12 +19,11 @@ app.use(bodyParser.json());
 // sockets
 var logueos = [{ 
     email: "paola@gmail.com", 
-    date: "hola :]" 
+    date: "22/6/2021 11:33:10" 
 }]; 
 app.use(express.static('src/sockets/')); 
 io.on('connection', function(socket) { 
     console.log('Alguien se ha conectado con Sockets');   
-    socket.emit('logueos', logueos); 
     socket.on('new-logueo', function(data) { 
       logueos.push(data); 
       io.sockets.emit('logueos', logueos); 
