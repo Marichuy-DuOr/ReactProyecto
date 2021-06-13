@@ -4,10 +4,11 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {HomeScreen} from './HomeScreen';
 import {RecipeScreen} from './RecipeScreen';
-import DetailsScreen from './DetailsScreen';
+import SearchRecipes from './SearchRecipes';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
 
@@ -48,13 +49,13 @@ const MainTabScreen = () => (
       />
 
       <Tab.Screen
-        name="Explore"
+        name="Mis Recetas"
         component={ExploreStackScreen}
         options={{
-          tabBarLabel: 'Explorar',
+          tabBarLabel: 'Mis Recetas',
           tabBarColor: '#d02860',
           tabBarIcon: ({ color }) => (
-            <Icon name="ios-aperture" color={color} size={26} />
+            <Icon name="add-outline" color={color} size={26} />
           ),
         }}
       />
@@ -66,7 +67,7 @@ export default MainTabScreen;
 const HomeStackScreen = ({navigation}) => (
 <HomeStack.Navigator screenOptions={{
         headerStyle: {
-        backgroundColor: '#009387',
+        backgroundColor: '#009387'
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -77,12 +78,19 @@ const HomeStackScreen = ({navigation}) => (
         title:'FoodApp',
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+        ),
+        headerRight:() => (
+          <Icon.Button name="ios-search" size={25} backgroundColor="#009387" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
         )
-        }} />
+        }}/>
+
         <HomeStack.Screen name="RecipeScreen" component={RecipeScreen} options={{
         title:'Receta',
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+        ),
+        headerRight:() => (
+          <Icon.Button name="ios-search" size={25} backgroundColor="#009387" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
         )
         }} />
 
@@ -102,6 +110,9 @@ const ProfileStackScreen = ({navigation}) => (
         <ProfileStack.Screen name="Perfil" component={ProfileScreen} options={{
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
+        ),
+        headerRight:() => (
+          <Icon.Button name="ios-search" size={25} backgroundColor="#1f65ff" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
         )
         }} />
 </ProfileStack.Navigator>
@@ -117,9 +128,12 @@ const ExploreStackScreen = ({navigation}) => (
           fontWeight: 'bold'
           }
       }}>
-          <ExploreStack.Screen name="Explorar" component={ExploreScreen} options={{
+          <ExploreStack.Screen name="Mis Recetas" component={ExploreScreen} options={{
           headerLeft: () => (
               <Icon.Button name="ios-menu" size={25} backgroundColor="#d02860" onPress={() => navigation.openDrawer()}></Icon.Button>
+          ),
+          headerRight:() => (
+            <Icon.Button name="ios-search" size={25} backgroundColor="#d02860" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
           )
           }} />
   </ExploreStack.Navigator>

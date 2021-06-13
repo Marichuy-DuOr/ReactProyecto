@@ -3,7 +3,7 @@ import React, {createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthData, authService} from '../services/authService';
 // import {API_URL_SOCKET} from "@env";
-const API_URL_SOCKET = 'http://192.168.100.13:4000/';
+const API_URL_SOCKET = 'http://192.168.100.9:4000/';
 
 const io = require('socket.io-client');
 const socket = io(API_URL_SOCKET);
