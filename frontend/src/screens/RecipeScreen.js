@@ -57,6 +57,13 @@ export function RecipeScreen({route, navigation}) {
                 <FontAwesome name="heart" size={16} color="#FF6347" />
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.categoryBtn}
+                >
+                <View style={styles.categoryIcon}>
+                <FontAwesome name="search" size={16} color="#FF6347" />
+                </View>
+              </TouchableOpacity>
               
               <TouchableOpacity
                 style={styles.categoryBtn}
