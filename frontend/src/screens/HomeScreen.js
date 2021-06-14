@@ -7,7 +7,10 @@ import {
   StyleSheet, 
   Text, 
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput,
+  // Button,
+  TouchableHighlight,
 } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import Swiper from 'react-native-swiper/src';
@@ -17,6 +20,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
+import { Icon } from 'react-native-elements'
 
 export function HomeScreen({navigation}) {
     const [recetas, setRecetas] = useState([]);
@@ -33,7 +37,9 @@ export function HomeScreen({navigation}) {
       callApi();
     }, []);
 
+
     const Item = ({ item }) => (
+
       <View style={styles.cardsWrapper}>
         <TouchableOpacity 
           onPress={()=>{
@@ -56,9 +62,10 @@ export function HomeScreen({navigation}) {
           </View>
           <View style={styles.cardInfo}>
             <Text style={styles.cardTitle}>{item.title}</Text>
-            <Text style={styles.cardDetails}>
-              Amazing description for this amazing place
-            </Text>
+              <Text style={styles.cardDetails}>
+                {item.creditsText}
+              </Text>
+            
           </View>
         </TouchableOpacity>
       </View>
@@ -136,18 +143,15 @@ export function HomeScreen({navigation}) {
             </View>
 
             <View style={styles.cardsWrapper}>
-              <Text
-                style={{
-                  alignSelf: 'center',
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  color: '#333',
-                }}>
-                Recetas
-              </Text>
-              <View style={styles.cardsWrapper}>
-      
-      </View>
+            <Text
+                    style={{
+                    alignSelf: 'center',
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    color: '#333',
+                  }}>
+                    Recetas
+                  </Text>
             </View> 
             </>
           }
@@ -155,11 +159,8 @@ export function HomeScreen({navigation}) {
           data={Object.values(recetas)} 
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
-          
-          
         />
       </SafeAreaView>
-
     );
 }
 
