@@ -90,12 +90,10 @@ const HomeStackScreen = ({navigation}) => (
 
         <HomeStack.Screen name="RecipeScreen" component={RecipeScreen} options={{
         title:'Receta',
-        headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
-        ),
-        headerRight:() => (
-          <Icon.Button name="ios-search" size={25} backgroundColor="#009387" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
-        )
+        headerBackTitleVisible: false,
+        headerTitle: false,
+        headerTransparent: true,
+        headerTintColor: '#fff'
         }} />
         
         <HomeStack.Screen name="SearchRecipes" component={SearchRecipesScreen} options={{
