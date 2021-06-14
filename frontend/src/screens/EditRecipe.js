@@ -1,12 +1,24 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Formik} from 'formik';
 import {StyleSheet, Text, StatusBar, TextInput, Button, Alert, ScrollView, SafeAreaView } from 'react-native';
-import * as yup from 'yup';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
 
-export const ExploreScreen = ({navigation}) => {
+export const EditRecipe = ({route, navigation}) => {
+    const [receta, setReceta] = useState([]);
     const auth = useAuth();
+
+    useEffect(() => {
+        const callApi = async () => {
+            await apiCalls.getApiCall(`original/${route.params.id}`, auth.authData.token)
+            .then( json => {
+                console.log(json.data[0]);
+              setReceta(json.data[0]);
+            })
+        }
+        callApi();
+      }, []);
+
    const  registrarOriginal = async (values) => {
       const body = {
         nombre: values.nombre,
@@ -17,10 +29,10 @@ export const ExploreScreen = ({navigation}) => {
         image: values.image,
       }
     
-      await apiCalls.postApiCall(`original`, body , auth.authData.token)
+      await apiCalls.putApiCall(`original/${route.params.id}`, body , auth.authData.token)
         .then( json => {
           console.log(json);
-          Alert.alert('Guardaste tu receta!!');
+          Alert.alert('Cambios Realizados');
       }).then( json => {
         console.log(json);
         navigation.navigate("Mis Recetas");
@@ -30,106 +42,67 @@ export const ExploreScreen = ({navigation}) => {
     return(
       <Formik
         initialValues={{
-            nombre: "",
-            listoMinutos: "", 
-            descripcion: "",
-            ingredientes: "",
-            instrucciones: "",
-            image: ""
+            nombre: receta.nombre,
+            listoMinutos: receta.listoMinutos, 
+            descripcion: receta.descripcion,
+            ingredientes: receta.ingredientes,
+            instrucciones: receta.instrucciones,
+            image: receta.image
         }} 
         // onSubmit={values=>alert.alert(JSON.stringify(values))}
         onSubmit={values=>{
           registrarOriginal(values);
         }}
-        validationSchema={yup.object().shape(
-          {
-            nombre: yup
-              .string()
-              .required('Campo titulo requerido'),
-            listoMinutos: yup
-              .string()
-              .required('Campo minutos requerido'),
-            descripcion: yup
-              .string()
-              .required('Campo descripcion requerido'),
-            ingredientes: yup
-              .string()
-              .required('Campo ingredientes requerido'),
-            instrucciones: yup
-              .string()
-              .required('Campo instrucciones requerido'), 
-            image: yup
-              .string()
-              .required('Campo url imagen requerido'), 
-              })  
-          }
+        
         >
           {({values,handleChange,errors,setFieldTouched, touched,isValid,handleSubmit})=>(
           <SafeAreaView style={styles.container}>
           <ScrollView >
             <TextInput 
+              defaultValue={receta.nombre}
               style={styles.entrada}
               value={values.nombre}
               onChangeText={handleChange('nombre')}
-              placeholder="Titulo"
             />
-            {touched.nombre && errors.nombre && 
-                <Text style={{fontSize:12,color:'red'}}>{errors.nombre}</Text>
-            }
             <TextInput 
               style={styles.entrada}
               value={values.listoMinutos}
               onChangeText={handleChange('listoMinutos')}
-              placeholder="Listo Minutos"
+              defaultValue={receta.listoMinutos}
             />
-            {touched.listoMinutos && errors.listoMinutos && 
-                <Text style={{fontSize:12,color:'red'}}>{errors.listoMinutos}</Text>
-            }
             <TextInput 
               style={styles.area}
               multiline={true}
               numberOfLines={10}
               value={values.descripcion}
               onChangeText={handleChange('descripcion')}
-              placeholder="Descripcion"
+              defaultValue={receta.descripcion}
             />
-            {touched.descripcion && errors.descripcion && 
-                <Text style={{fontSize:12,color:'red'}}>{errors.descripcion}</Text>
-            }
             <TextInput 
               style={styles.area}
               multiline={true}
               numberOfLines={10}
               value={values.ingredientes}
               onChangeText={handleChange('ingredientes')}
-              placeholder="Ingredientes"
+              defaultValue={receta.ingredientes}
             />
-            {touched.ingredientes && errors.ingredientes && 
-                <Text style={{fontSize:12,color:'red'}}>{errors.ingredientes}</Text>
-            }
             <TextInput 
               style={styles.area}
               multiline={true}
               numberOfLines={10}
               value={values.instrucciones}
               onChangeText={handleChange('instrucciones')}
-              placeholder="Instrucciones"
+              defaultValue={receta.instrucciones}
             />
-            {touched.instrucciones && errors.instrucciones && 
-                <Text style={{fontSize:12,color:'red'}}>{errors.instrucciones}</Text>
-            }
             <TextInput 
               style={styles.entrada}
               value={values.image}
               onChangeText={handleChange('image')}
-              placeholder="Url imagen"
+              defaultValue={receta.image}
             />
-            {touched.image && errors.image && 
-                <Text style={{fontSize:12,color:'red'}}>{errors.image}</Text>
-            }
             <Button 
               color='#1f65ff'
-              title="enviar"
+              title="Actualizar"
               disabled={!isValid}
               onPress={handleSubmit}
             /> 

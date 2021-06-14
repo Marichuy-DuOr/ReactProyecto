@@ -7,6 +7,7 @@ const originalSchema = new Schema({
     descripcion: String, 
     ingredientes: String,
     instrucciones: String,
+    image: String
 }, {
     timestamps: true
 });

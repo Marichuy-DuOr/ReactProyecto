@@ -86,7 +86,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Mis recetas"
-                            onPress={() => {props.navigation.navigate('BookmarkScreen')}}
+                            onPress={() => {props.navigation.navigate('Mis Recetas')}}
                         />
                     </Drawer.Section>
                     

@@ -183,6 +183,7 @@ router.get('/originals', (req, res) => {
     Original.find({id_usuario: id_usuario})
     .then(doc => {
         res.json({data:doc});
+        console.log(data);
     })
     .catch(err =>{
         console.log("Un error al consultar originales", err.message);
@@ -208,7 +209,8 @@ router.post('/original', (req, res) => {
             listoMinutos: req.body.listoMinutos,
             descripcion: req.body.descripcion, 
             ingredientes: req.body.ingredientes,
-            instrucciones: req.body.instrucciones
+            instrucciones: req.body.instrucciones,
+            image: req.body.instrucciones
         }
     );
     //mongoose
@@ -226,21 +228,21 @@ router.put('/original/:id',(req,res) => {
     const id = req.params.id;
     const original = new Original(
         {
-            id_usuario: req.userId,
             nombre: req.body.nombre,
             listoMinutos: req.body.listoMinutos,
             descripcion: req.body.descripcion, 
             ingredientes: req.body.ingredientes,
-            instrucciones: req.body.instrucciones
+            instrucciones: req.body.instrucciones,
+            image: req.body.image
         }
     );
     Original.update({_id:id},{
-        id_usuario: original.userId,
         nombre: original.nombre,
         listoMinutos: original.listoMinutos,
         descripcion: original.descripcion, 
         ingredientes: original.ingredientes,
-        instrucciones: original.instrucciones
+        instrucciones: original.instrucciones,
+        image: original.image
     })
     .then(doc => {
         console.log('Original actualizada', doc)
