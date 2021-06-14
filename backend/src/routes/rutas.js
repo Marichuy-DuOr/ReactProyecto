@@ -235,7 +235,7 @@ router.put('/original/:id',(req,res) => {
         }
     );
     Original.update({_id:id},{
-        id_usuario: original.userId,
+        id_usuario: original.id_usuario,
         nombre: original.nombre,
         listoMinutos: original.listoMinutos,
         descripcion: original.descripcion, 

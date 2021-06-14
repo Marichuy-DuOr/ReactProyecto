@@ -1,15 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, Image, StyleSheet, Dimensions, StatusBar, Platform, TouchableOpacity } from 'react-native';
+import {View, Text, Image, StyleSheet, Dimensions, StatusBar, Platform, TouchableOpacity, Alert } from 'react-native';
 import { ImageHeaderScrollView, TriggeringView } from 'react-native-image-header-scroll-view';
 
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
-
-/* import React, {useState, useEffect } from 'react';
-import { View, Text, Alert, Button } from 'react-native'; 
-<Button title="Guardar" onPress={guardarReceta}></Button> */
 
 const MIN_HEIGHT = Platform.OS === 'ios' ? 90 : 55;
 const MAX_HEIGHT = 350;
@@ -29,6 +25,16 @@ export function RecipeScreen({route, navigation}) {
       }
       callApi();
     }, []);
+
+    const buscarSimilares = () => {
+      navigation.navigate(
+        'SearchRecipes',
+        { 
+          similares:  true,
+          id:  route.params.id,
+        },
+      );
+    }
 
     const guardarReceta = () => {
       const body = {
@@ -83,13 +89,15 @@ export function RecipeScreen({route, navigation}) {
           <View style={styles.categoryContainer2}>
               <TouchableOpacity
                 style={styles.categoryBtn}
+                onPress={guardarReceta}
                 >
                 <View style={styles.categoryIcon}>
-                <FontAwesome name="heart" size={16} color="#FF6347" />
+                <FontAwesome name="heart"  size={16} color="#FF6347" />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.categoryBtn}
+                onPress={buscarSimilares}
                 >
                 <View style={styles.categoryIcon}>
                 <FontAwesome name="search" size={16} color="#FF6347" />

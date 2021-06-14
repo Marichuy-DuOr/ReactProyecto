@@ -6,31 +6,37 @@ import {
   FlatList, 
   StyleSheet, 
   Text, 
-  StatusBar,
   TouchableOpacity,
   TextInput,
   // Button,
   TouchableHighlight,
 } from 'react-native';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
-import Swiper from 'react-native-swiper/src';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
 import { Icon } from 'react-native-elements'
 
-export function SearchRecipesScreen({navigation}) {
+export function SearchRecipesScreen({route, navigation}) {
     const [recetas, setRecetas] = useState([]);
     const [receta, setReceta] = useState([]);
-    
+    //route.params.similares
     const auth = useAuth();
 
     const handleRecipeChange = (receta) => {
       setReceta(receta);
     } 
+
+    useEffect(() => {
+      
+      if (route.params.similares) {
+        const callApi = async () => {
+          await apiCalls.getApiCall(`similarSpoonacular/${route.params.id}`, auth.authData.token)
+          .then( json => {
+            setRecetas(json);
+          })
+        }
+        callApi();
+      }
+    }, []);
 
     const lookRecipes = () => {
       if (receta) {
@@ -64,7 +70,7 @@ export function SearchRecipesScreen({navigation}) {
         >
           <View style={styles.cardImgWrapper}>
             <Image
-              source={{uri: item.image}}
+              source={{uri: `https://spoonacular.com/recipeImages/${item.id}-556x370.jpg`}}
               resizeMode="cover"
               style={styles.cardImg}
             />

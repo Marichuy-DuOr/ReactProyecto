@@ -37,6 +37,9 @@ export function HomeScreen({navigation}) {
       callApi();
     }, []);
 
+    const buscarIngredientes = () => {
+      navigation.navigate("IngredientsScreen");
+    }
 
     const Item = ({ item }) => (
 
@@ -134,7 +137,7 @@ export function HomeScreen({navigation}) {
                 </View>
                 <Text style={styles.categoryBtnTxt}>Favoritas</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+              <TouchableOpacity style={styles.categoryBtn} onPress={buscarIngredientes}>
                 <View style={styles.categoryIcon}>
                   <MaterialCommunityIcons name="magnify" size={35} color="#FF6347" />
                 </View>

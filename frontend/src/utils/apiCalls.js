@@ -77,6 +77,25 @@ const apiCalls =  {
             return json;
           })
     },
+
+    postApiCallnoT: async(url, body) => {
+      console.log(API_URL + url);
+      return fetch(API_URL + url,{
+        method: 'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(body)
+      }).then( response => {
+        if (response.ok) {
+          return response.json();              
+        } else {
+          return null;
+        }
+      }).then( json => {
+        return json;
+      })
+},
     
 }
 
