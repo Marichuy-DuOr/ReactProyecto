@@ -12,12 +12,16 @@ import {IngredientsScreen} from './IngredientsScreen';
 import {IngredientScreen} from './IngredientScreen';
 import {SearchRecipesScreen} from './SearchRecipesScreen';
 import DetailsScreen from './DetailsScreen';
-import ExploreScreen from './ExploreScreen';
+import {ExploreScreen} from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
+import { MyRecipesScreen } from './MyRecipesScreen';
+import { OriginalScreen } from './OriginalScreen';
+import { EditRecipe } from './EditRecipe';
 
 const HomeStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
+const RecipesStack = createStackNavigator();
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -52,13 +56,25 @@ const MainTabScreen = () => (
       />
 
       <Tab.Screen
-        name="Mis Recetas"
+        name="Agregar Receta"
         component={ExploreStackScreen}
         options={{
-          tabBarLabel: 'Mis Recetas',
+          tabBarLabel: 'Recetas',
           tabBarColor: '#d02860',
           tabBarIcon: ({ color }) => (
             <Icon name="add-outline" color={color} size={26} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Mis Recetas"
+        component={RecipesStackScreen}
+        options={{
+          tabBarLabel: 'Recetas',
+          tabBarColor: '#97DF3C',
+          tabBarIcon: ({ color }) => (
+            <Icon name="bookmark-outline" color={color} size={26} />
           ),
         }}
       />
@@ -158,7 +174,7 @@ const ExploreStackScreen = ({navigation}) => (
           fontWeight: 'bold'
           }
       }}>
-          <ExploreStack.Screen name="Mis Recetas" component={ExploreScreen} options={{
+          <ExploreStack.Screen name="Agregar Receta" component={ExploreScreen} options={{
           headerLeft: () => (
               <Icon.Button name="ios-menu" size={25} backgroundColor="#d02860" onPress={() => navigation.openDrawer()}></Icon.Button>
           ),
@@ -168,3 +184,38 @@ const ExploreStackScreen = ({navigation}) => (
           }} />
   </ExploreStack.Navigator>
   );
+
+  const RecipesStackScreen = ({navigation}) => (
+    <RecipesStack.Navigator screenOptions={{
+            headerStyle: {
+            backgroundColor: '#97DF3C'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+            fontWeight: 'bold'
+            }
+        }}>
+            <RecipesStack.Screen name="Mis Recetas" component={MyRecipesScreen} options={{
+            title:'Mis Recetas',
+            headerLeft: () => (
+                <Icon.Button name="ios-menu" size={25} backgroundColor="#97DF3C" onPress={() => navigation.openDrawer()}></Icon.Button>
+            ),
+            headerRight:() => (
+              <Icon.Button name="ios-search" size={25} backgroundColor="#97DF3C" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
+            )
+            }}/>
+            <RecipesStack.Screen name="OriginalScreen" component={OriginalScreen} options={{
+              title:'Receta',
+              headerBackTitleVisible: false,
+              headerTitle: false,
+              headerTransparent: true,
+              headerTintColor: '#fff'
+              }} />
+            <RecipesStack.Screen name="EditRecipe" component={EditRecipe} options={{
+              title:'Actualizar Receta',
+              headerTintColor: '#fff'
+              }} />
+            
+    
+    </RecipesStack.Navigator>
+    );
