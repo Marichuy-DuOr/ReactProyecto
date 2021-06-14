@@ -8,7 +8,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import {HomeScreen} from './HomeScreen';
 import {RecipeScreen} from './RecipeScreen';
-import SearchRecipes from './SearchRecipes';
+import {IngredientsScreen} from './IngredientsScreen';
+import {IngredientScreen} from './IngredientScreen';
+import {SearchRecipesScreen} from './SearchRecipesScreen';
+import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
 
@@ -59,6 +62,7 @@ const MainTabScreen = () => (
           ),
         }}
       />
+      
     </Tab.Navigator>
 );
 
@@ -90,6 +94,13 @@ const HomeStackScreen = ({navigation}) => (
         headerTitle: false,
         headerTransparent: true,
         headerTintColor: '#fff'
+        }} />
+        
+        <HomeStack.Screen name="SearchRecipes" component={SearchRecipesScreen} options={{
+        title:'Buscar recetas',
+        headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+        ),
         }} />
 
 </HomeStack.Navigator>
