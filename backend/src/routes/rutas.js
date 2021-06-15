@@ -201,6 +201,18 @@ router.get('/original/:id', (req, res) => {
     })
 });
 
+router.get('/original-nombre/:nombre', (req, res) => {
+    const nombre = req.params.nombre;
+    const id_usuario = req.userId;
+    Original.find({id_usuario: id_usuario, nombre: { $regex: '.*' + nombre + '.*' }})
+    .then(doc => {
+        res.json({data:doc});
+    })
+    .catch(err =>{
+        console.log("Un error al consultar original", err.message);
+    })
+});
+
 router.post('/original', (req, res) => {
     const original = new Original(
         {
@@ -210,7 +222,7 @@ router.post('/original', (req, res) => {
             descripcion: req.body.descripcion, 
             ingredientes: req.body.ingredientes,
             instrucciones: req.body.instrucciones,
-            image: req.body.instrucciones
+            image: req.body.image
         }
     );
     //mongoose

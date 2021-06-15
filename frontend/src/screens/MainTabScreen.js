@@ -11,6 +11,7 @@ import {RecipeScreen} from './RecipeScreen';
 import {IngredientsScreen} from './IngredientsScreen';
 import {IngredientScreen} from './IngredientScreen';
 import {SearchRecipesScreen} from './SearchRecipesScreen';
+import {SearchOriginalsScreen} from './SearchOriginalsScreen';
 import {FavoriteIngredientsScreen} from './FavoriteIngredientsScreen';
 import {FavoriteRecipesScreen} from './FavoriteRecipesScreen';
 import DetailsScreen from './DetailsScreen';
@@ -183,9 +184,9 @@ const ProfileStackScreen = ({navigation}) => (
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
         ),
-        headerRight:() => (
+        /* headerRight:() => (
           <Icon.Button name="ios-search" size={25} backgroundColor="#1f65ff" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
-        )
+        ) */
         }} />
 </ProfileStack.Navigator>
 );
@@ -204,9 +205,9 @@ const ExploreStackScreen = ({navigation}) => (
           headerLeft: () => (
               <Icon.Button name="ios-menu" size={25} backgroundColor="#d02860" onPress={() => navigation.openDrawer()}></Icon.Button>
           ),
-          headerRight:() => (
+          /* headerRight:() => (
             <Icon.Button name="ios-search" size={25} backgroundColor="#d02860" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
-          )
+          ) */
           }} />
   </ExploreStack.Navigator>
   );
@@ -227,7 +228,7 @@ const ExploreStackScreen = ({navigation}) => (
                 <Icon.Button name="ios-menu" size={25} backgroundColor="#97DF3C" onPress={() => navigation.openDrawer()}></Icon.Button>
             ),
             headerRight:() => (
-              <Icon.Button name="ios-search" size={25} backgroundColor="#97DF3C" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
+              <Icon.Button name="ios-search" size={25} backgroundColor="#97DF3C" onPress={() => {navigation.navigate('SearchOriginalsScreen')}}></Icon.Button>
             )
             }}/>
             <RecipesStack.Screen name="OriginalScreen" component={OriginalScreen} options={{
@@ -239,6 +240,10 @@ const ExploreStackScreen = ({navigation}) => (
               }} />
             <RecipesStack.Screen name="EditRecipe" component={EditRecipe} options={{
               title:'Actualizar Receta',
+              headerTintColor: '#fff'
+              }} />
+            <RecipesStack.Screen name="SearchOriginalsScreen" component={SearchOriginalsScreen} options={{
+              title:'Buscar recetas originales',
               headerTintColor: '#fff'
               }} />
             
