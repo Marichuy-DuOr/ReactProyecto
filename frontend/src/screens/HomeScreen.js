@@ -9,8 +9,9 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
-  // Button,
   TouchableHighlight,
+  RefreshControl,
+  ScrollView
 } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import Swiper from 'react-native-swiper/src';
@@ -20,12 +21,26 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
+
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export function HomeScreen({navigation}) {
     const [recetas, setRecetas] = useState([]);
+    const [refreshing, setRefreshing] = React.useState(false);
     
     const auth = useAuth();
+
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+        apiCalls.getApiCall('randomSpoonacular', auth.authData.token)
+        .then( json => {
+          setRecetas(json.recipes);
+        })
+      wait(2000).then(() => setRefreshing(false));
+    }, []);
 
     useEffect(() => {
       const callApi = async () => {
@@ -37,6 +52,13 @@ export function HomeScreen({navigation}) {
       callApi();
     }, []);
 
+    const buscarIngredientes = () => {
+      navigation.navigate("IngredientsScreen");
+    }
+    
+    const recetasFavoritas = () => {
+      navigation.navigate("FavoriteRecipesScreen");
+    }
 
     const Item = ({ item }) => (
 
@@ -123,6 +145,7 @@ export function HomeScreen({navigation}) {
                 <Text style={styles.categoryBtnTxt}>Nutrición</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                onPress={recetasFavoritas}
                 style={styles.categoryBtn}
                 >
                 <View style={styles.categoryIcon}>
@@ -134,7 +157,7 @@ export function HomeScreen({navigation}) {
                 </View>
                 <Text style={styles.categoryBtnTxt}>Favoritas</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+              <TouchableOpacity style={styles.categoryBtn} onPress={buscarIngredientes}>
                 <View style={styles.categoryIcon}>
                   <MaterialCommunityIcons name="magnify" size={35} color="#FF6347" />
                 </View>
@@ -159,6 +182,13 @@ export function HomeScreen({navigation}) {
           data={Object.values(recetas)} 
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
+          refreshControl={
+            <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                enabled={true}
+            />
+            }
         />
       </SafeAreaView>
     );

@@ -228,6 +228,7 @@ router.put('/original/:id',(req,res) => {
     const id = req.params.id;
     const original = new Original(
         {
+            // id_usuario: req.userId,
             nombre: req.body.nombre,
             listoMinutos: req.body.listoMinutos,
             descripcion: req.body.descripcion, 
@@ -237,6 +238,7 @@ router.put('/original/:id',(req,res) => {
         }
     );
     Original.update({_id:id},{
+        // id_usuario: original.id_usuario,
         nombre: original.nombre,
         listoMinutos: original.listoMinutos,
         descripcion: original.descripcion, 

@@ -1,5 +1,5 @@
 // import {API_URL} from "@env";
-const API_URL = 'http://192.168.100.9:4000/api/';
+const API_URL = 'http://192.168.1.73:4000/api/';
 
 // todas las rutas aqui utilizan token
 const apiCalls =  {
@@ -77,6 +77,25 @@ const apiCalls =  {
             return json;
           })
     },
+
+    postApiCallnoT: async(url, body) => {
+      console.log(API_URL + url);
+      return fetch(API_URL + url,{
+        method: 'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(body)
+      }).then( response => {
+        if (response.ok) {
+          return response.json();              
+        } else {
+          return null;
+        }
+      }).then( json => {
+        return json;
+      })
+},
     
 }
 
