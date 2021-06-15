@@ -13,9 +13,6 @@ const Drawer = createDrawerNavigator();
 
 export const AppStack = () => {
   return (
-    /*<Stack.Navigator>
-      <Stack.Screen name="Home Screen" component={HomeScreen} />
-    </Stack.Navigator>*/
     <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
         <Drawer.Screen 
           name="HomeDrawer" 

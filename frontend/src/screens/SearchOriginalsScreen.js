@@ -15,7 +15,7 @@ import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
 import { Icon } from 'react-native-elements'
 
-export function SearchRecipesScreen({route, navigation}) {
+export function SearchOriginalsScreen({route, navigation}) {
     const [recetas, setRecetas] = useState([]);
     const [receta, setReceta] = useState([]);
     //route.params.similares
@@ -25,26 +25,13 @@ export function SearchRecipesScreen({route, navigation}) {
       setReceta(receta);
     } 
 
-    useEffect(() => {
-      
-      if (route.params.similares) {
-        const callApi = async () => {
-          await apiCalls.getApiCall(`similarSpoonacular/${route.params.id}`, auth.authData.token)
-          .then( json => {
-            setRecetas(json);
-          })
-        }
-        callApi();
-      }
-    }, []);
-
     const lookRecipes = () => {
       if (receta) {
         setRecetas(null);
         const callApi = async () => {
-          await apiCalls.getApiCall(`buscarSpoonacular/${receta}` , auth.authData.token)
+          await apiCalls.getApiCall(`original-nombre/${receta}` , auth.authData.token)
             .then( json => {
-              setRecetas(json.results);
+              setRecetas(json.data);
             })
         }
         callApi();
@@ -58,25 +45,25 @@ export function SearchRecipesScreen({route, navigation}) {
       <View style={styles.cardsWrapper}>
         <TouchableOpacity 
           onPress={()=>{
-            console.log('El id -> ' + item.id);
+            console.log('El id -> ' + item._id);
             console.log(item);
             // navigation.navigate(RecipeScreen);
             navigation.navigate(
-              'RecipeScreen',
-              { id:  item.id},
+              'OriginalScreen',
+              { id:  item._id},
             );
           }}
           style={styles.card}
         >
           <View style={styles.cardImgWrapper}>
             <Image
-              source={{uri: `https://spoonacular.com/recipeImages/${item.id}-556x370.jpg`}}
+              source={{uri: item.image}}
               resizeMode="cover"
               style={styles.cardImg}
             />
           </View>
           <View style={styles.cardInfo}>
-            <Text style={styles.cardTitle}>{item.title}</Text>
+            <Text style={styles.cardTitle}>{item.nombre}</Text>
             
           </View>
         </TouchableOpacity>
@@ -136,7 +123,7 @@ export function SearchRecipesScreen({route, navigation}) {
                     // si pones data={recetas} tambien hace lo mismo pero marca warning, no se por que jaja que raro 
                     data={Object.values(recetas)} 
                     renderItem={renderItem}
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => item._id.toString()}
                     ListEmptyComponent={
                       <Text >No se encontraron recetas</Text>
                     } 

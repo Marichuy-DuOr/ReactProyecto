@@ -13,7 +13,9 @@ import * as yup from 'yup';
 import {useAuth} from '../contexts/Auth';
 // import {API_URL} from "@env";
 import {estilos} from './estilos';
-const API_URL = 'http://192.168.100.9:4000/api/';
+import apiCalls from './../utils/apiCalls';
+// const API_URL = 'http://192.168.1.73:4000/api/';
+// const API_URL = 'http://192.168.100.9:4000/api/';
 
 const background = require("../../assets/sign_up_background.jpg");
 
@@ -21,9 +23,22 @@ export const SignUpScreen = ({navigation}) => {
   const [loading, isLoading] = useState(false);
   const auth = useAuth();
 
-  const signIn = async (_email, _password) => {
+  const signUp = async (values) => {
     isLoading(true);
-    await auth.signIn(_email, _password );
+
+    const body = {
+      nombre: values.nombre,
+      apepat: values.apepat,
+      apemat: values.apemat,
+      email: values.email,
+      password: values.password,
+    }
+    
+    await apiCalls.postApiCallnoT(`signup`, body)
+    .then( json => {
+      console.log(json);
+      navigation.navigate("SignInScreen");
+    })
   };
 
   return (
@@ -47,7 +62,8 @@ export const SignUpScreen = ({navigation}) => {
                 password2:""
               }} 
               onSubmit={values=>{
-                isLoading(true);
+                signUp(values);
+                /* isLoading(true);
                 console.log(API_URL + "signup");
                 fetch(API_URL + "signup",{
                   method: 'POST',
@@ -70,7 +86,7 @@ export const SignUpScreen = ({navigation}) => {
                 }).then( json => {
                   console.log(json);
                   navigation.navigate("SignInScreen");
-                })
+                }) */
               }}
               validationSchema={yup.object().shape(
               {

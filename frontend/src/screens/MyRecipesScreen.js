@@ -7,15 +7,31 @@ import {
   StyleSheet, 
   Text, 
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
 
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 export const MyRecipesScreen = ({navigation}) => {
   const [recetas, setRecetas] = useState([]);
-    
+  const [refreshing, setRefreshing] = React.useState(false);
+
   const auth = useAuth();
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    apiCalls.getApiCall('originals', auth.authData.token)
+      .then( json => {
+        console.log(json.data);
+        setRecetas(json.data);
+      })
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
   useEffect(() => {
     const callApi = async () => {
@@ -76,6 +92,16 @@ export const MyRecipesScreen = ({navigation}) => {
         data={Object.values(recetas)} 
         renderItem={renderItem}
         keyExtractor={item => item._id}
+        refreshControl={
+          <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              enabled={true}
+          />
+          }
+        ListEmptyComponent={
+            <Text >Aún no haz guardado ninguna receta</Text>
+        } 
       />
     </SafeAreaView>
   );

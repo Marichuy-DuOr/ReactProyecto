@@ -11,6 +11,9 @@ import {RecipeScreen} from './RecipeScreen';
 import {IngredientsScreen} from './IngredientsScreen';
 import {IngredientScreen} from './IngredientScreen';
 import {SearchRecipesScreen} from './SearchRecipesScreen';
+import {SearchOriginalsScreen} from './SearchOriginalsScreen';
+import {FavoriteIngredientsScreen} from './FavoriteIngredientsScreen';
+import {FavoriteRecipesScreen} from './FavoriteRecipesScreen';
 import DetailsScreen from './DetailsScreen';
 import {ExploreScreen} from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
@@ -100,7 +103,13 @@ const HomeStackScreen = ({navigation}) => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
         ),
         headerRight:() => (
-          <Icon.Button name="ios-search" size={25} backgroundColor="#009387" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
+          <Icon.Button name="ios-search" size={25} backgroundColor="#009387" onPress={() => {
+            // navigation.navigate('SearchRecipes')
+            navigation.navigate(
+              'SearchRecipes',
+              { similares:  false},
+            );
+          }}></Icon.Button>
         )
         }}/>
 
@@ -117,6 +126,45 @@ const HomeStackScreen = ({navigation}) => (
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
         ),
+        }} />
+
+        <HomeStack.Screen name="IngredientsScreen" component={IngredientsScreen} options={{
+        title:'Ingredientes',
+        headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+        ),
+        }} />
+        
+        <HomeStack.Screen name="FavoriteRecipesScreen" component={FavoriteRecipesScreen} options={{
+        title:'Recetas favoritos',
+        headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+        ),
+        headerRight:() => (
+          <Icon.Button name="md-arrow-redo-outline" size={25} backgroundColor="#009387" onPress={() => {
+            navigation.navigate('FavoriteIngredientsScreen');
+          }}></Icon.Button>
+        )
+        }} />
+        
+        <HomeStack.Screen name="FavoriteIngredientsScreen" component={FavoriteIngredientsScreen} options={{
+        title:'Ingredientes favoritos',
+        headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+        ),
+        headerRight:() => (
+          <Icon.Button name="md-arrow-redo-outline" size={25} backgroundColor="#009387" onPress={() => {
+            navigation.navigate('FavoriteRecipesScreen');
+          }}></Icon.Button>
+        )
+        }} />
+        
+        <HomeStack.Screen name="IngredientScreen" component={IngredientScreen} options={{
+        title:'Ingrediente',
+        headerBackTitleVisible: false,
+        headerTitle: false,
+        headerTransparent: true,
+        headerTintColor: '#fff'
         }} />
 
 </HomeStack.Navigator>
@@ -136,9 +184,9 @@ const ProfileStackScreen = ({navigation}) => (
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
         ),
-        headerRight:() => (
+        /* headerRight:() => (
           <Icon.Button name="ios-search" size={25} backgroundColor="#1f65ff" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
-        )
+        ) */
         }} />
 </ProfileStack.Navigator>
 );
@@ -157,9 +205,9 @@ const ExploreStackScreen = ({navigation}) => (
           headerLeft: () => (
               <Icon.Button name="ios-menu" size={25} backgroundColor="#d02860" onPress={() => navigation.openDrawer()}></Icon.Button>
           ),
-          headerRight:() => (
+          /* headerRight:() => (
             <Icon.Button name="ios-search" size={25} backgroundColor="#d02860" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
-          )
+          ) */
           }} />
   </ExploreStack.Navigator>
   );
@@ -180,7 +228,7 @@ const ExploreStackScreen = ({navigation}) => (
                 <Icon.Button name="ios-menu" size={25} backgroundColor="#97DF3C" onPress={() => navigation.openDrawer()}></Icon.Button>
             ),
             headerRight:() => (
-              <Icon.Button name="ios-search" size={25} backgroundColor="#97DF3C" onPress={() => {navigation.navigate('SearchRecipes')}}></Icon.Button>
+              <Icon.Button name="ios-search" size={25} backgroundColor="#97DF3C" onPress={() => {navigation.navigate('SearchOriginalsScreen')}}></Icon.Button>
             )
             }}/>
             <RecipesStack.Screen name="OriginalScreen" component={OriginalScreen} options={{
@@ -192,6 +240,10 @@ const ExploreStackScreen = ({navigation}) => (
               }} />
             <RecipesStack.Screen name="EditRecipe" component={EditRecipe} options={{
               title:'Actualizar Receta',
+              headerTintColor: '#fff'
+              }} />
+            <RecipesStack.Screen name="SearchOriginalsScreen" component={SearchOriginalsScreen} options={{
+              title:'Buscar recetas originales',
               headerTintColor: '#fff'
               }} />
             
