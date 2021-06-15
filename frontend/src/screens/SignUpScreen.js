@@ -13,6 +13,7 @@ import * as yup from 'yup';
 import {useAuth} from '../contexts/Auth';
 // import {API_URL} from "@env";
 import {estilos} from './estilos';
+import apiCalls from './../utils/apiCalls';
 // const API_URL = 'http://192.168.1.73:4000/api/';
 // const API_URL = 'http://192.168.100.9:4000/api/';
 

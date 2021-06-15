@@ -25,12 +25,16 @@ import {
   Text, 
   TouchableOpacity,
   TextInput,
-  // Button,
   TouchableHighlight,
+  RefreshControl,
 } from 'react-native';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
 import { Icon } from 'react-native-elements'
+
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export function IngredientsScreen({navigation}) {
     const [ingredientes, setIngredientes] = useState([]);
@@ -55,23 +59,6 @@ export function IngredientsScreen({navigation}) {
       }
       
     }
-
-    /* const Item = ({ item }) => (
-      // Solo usar los campos "id", "name","image" porque las búsquedas solo retornan estos tres campos
-      <View style={styles.item}>
-        <TouchableOpacity 
-          onPress={()=>{
-            console.log('El id -> ' + item.id);
-            navigation.navigate(
-              'IngredientScreen',
-              { id:  item.id},
-            );
-          }}
-        >
-          <Text style={styles.title}>{item.name}</Text>
-        </TouchableOpacity>
-      </View>
-    ); */
 
     const Item = ({ item }) => (
 
@@ -157,6 +144,9 @@ export function IngredientsScreen({navigation}) {
                     data={Object.values(ingredientes)} 
                     renderItem={renderItem}
                     keyExtractor={item => item.id.toString()}
+                    ListEmptyComponent={
+                      <Text >No se encontraron recetas</Text>
+                    } 
                 />
                 </>
             ) : (
@@ -165,23 +155,6 @@ export function IngredientsScreen({navigation}) {
                 </>
             )}
       </SafeAreaView>     
-        
-        /* { ingredientes ? (
-          <>
-            <FlatList
-              // si pones data={ingredientes} tambien hace lo mismo pero marca warning, no se por que jaja que raro 
-              data={Object.values(ingredientes)} 
-              renderItem={renderItem}
-              keyExtractor={item => item.id.toString()}
-            />
-          </>
-          ) : (
-            <>
-              <Text>No se encontraron ingredientes</Text>
-            </>
-          )
-        }
-      </SafeAreaView> */
     );
 }
 

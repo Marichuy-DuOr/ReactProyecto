@@ -1,5 +1,15 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, Image, StyleSheet, Dimensions, StatusBar, Platform, TouchableOpacity, Alert } from 'react-native';
+import {
+  View, 
+  Text, 
+  Image, 
+  StyleSheet, 
+  Dimensions, 
+  StatusBar, 
+  Platform, 
+  TouchableOpacity, 
+  Alert 
+} from 'react-native';
 import { ImageHeaderScrollView, TriggeringView } from 'react-native-image-header-scroll-view';
 
 import * as Animatable from 'react-native-animatable';
@@ -7,24 +17,42 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
 
+import { PieChart } from "react-native-chart-kit";
+
 const MIN_HEIGHT = Platform.OS === 'ios' ? 90 : 55;
 const MAX_HEIGHT = 350;
 
 export function RecipeScreen({route, navigation}) {
     const [receta, setReceta] = useState([]);
+    const [data, setData] = useState([]);
     
     const auth = useAuth();
     const navTitleView = useRef(null);
 
     useEffect(() => {
+      setData([]);
       const callApi = async () => {
           await apiCalls.getApiCall(`recipeSpoonacular/${route.params.id}`, auth.authData.token)
           .then( json => {
             setReceta(json);
+            json.nutrition.nutrients.map(o => {
+              if (o.unit === 'g' ) {
+                const newData = {
+                  name: `g ${o.title}`,
+                  population: o.amount,
+                  //color: "#" + ((1<<24)*Math.random() | 0).toString(16),
+                  color: '#' + Math.random().toString(16).substr(-6),
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 10
+                }
+                setData(data =>[...data, newData]);
+              }
+            });
           })
       }
       callApi();
     }, []);
+
 
     const buscarSimilares = () => {
       navigation.navigate(
@@ -48,7 +76,12 @@ export function RecipeScreen({route, navigation}) {
         await apiCalls.getApiCall(`recipe/${route.params.id}` , auth.authData.token)
           .then( json => {
             if ( json.data.length > 0 ) {
-              Alert.alert('Ya haz guardado esta receta');
+              // Alert.alert('Ya haz guardado esta receta');
+              // console.log(json.data[0]._id);
+              apiCalls.deleteApiCall(`recipe/${json.data[0]._id}` , auth.authData.token)
+                .then( json => {
+                  Alert.alert('Se ha eliminado de tus recetas!!');
+              }) 
             } else {
               apiCalls.postApiCall(`recipe`, body , auth.authData.token)
                 .then( json => {
@@ -60,6 +93,8 @@ export function RecipeScreen({route, navigation}) {
       }
       callApi();
     }
+
+    
   
     return (
        
@@ -121,7 +156,15 @@ export function RecipeScreen({route, navigation}) {
               </View>
             
           </View>
-          <Text style={styles.sectionContent}>Aqui van los ingredientes</Text>
+
+            {receta.extendedIngredients && receta.extendedIngredients.length > 0 ? 
+              receta.extendedIngredients.map((ingrediente) => (
+                <Text style={styles.sectionContent}  key={ingrediente.id}>{ingrediente.name}</Text>
+              ))
+            : 
+              <Text style={styles.sectionContent} >Cargando...</Text>
+            }
+            
         </View>
 
         <View style={[styles.section, styles.sectionLarge]}>
@@ -130,9 +173,16 @@ export function RecipeScreen({route, navigation}) {
                 <FontAwesome name="tag" size={16} color="#fff" />
                 <Text style={styles.category}>Pasos</Text>
               </View>
-            
           </View>
-          <Text style={styles.sectionContent}>Aqui van los pasos</Text>
+            {receta.analyzedInstructions && receta.analyzedInstructions.length > 0 ? 
+              // Pregunto con el mismo que en el otro para que no marque error porque es marik
+              receta.analyzedInstructions[0].steps.map((instruccion) => (
+                <Text style={styles.sectionContent}  key={instruccion.number}>{instruccion.number} {instruccion.step}</Text>
+                  
+              ))
+            : 
+              <Text style={styles.sectionContent} >Cargando...</Text>
+            }
         </View>
         <View style={[styles.section, styles.sectionLarge]}>
           <View style={styles.categories}>
@@ -140,9 +190,35 @@ export function RecipeScreen({route, navigation}) {
                 <FontAwesome name="tag" size={16} color="#fff" />
                 <Text style={styles.category}>Información nutrimental</Text>
               </View>
-            
+              
           </View>
-          <Text style={styles.sectionContent}>Aqui van las graficas</Text>
+
+          <View>
+            
+            <PieChart
+              data={data}
+              width={Dimensions.get('window').width - 16}
+              height={220}
+              chartConfig={{
+                backgroundColor: '#fff',
+                backgroundGradientFrom: '#fff',
+                backgroundGradientTo: '#fff',
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+              }}
+              style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+              accessor="population"
+              backgroundColor="transparent"
+              paddingLeft="15"
+              absolute //for the absolute number remove if you want percentage
+            />
+          </View>
         </View>
       </ImageHeaderScrollView>
     </View>
@@ -178,6 +254,7 @@ const styles = StyleSheet.create({
   sectionContent: {
     fontSize: 16,
     textAlign: 'justify',
+    textTransform: 'capitalize'
   },
   categories: {
     flexDirection: 'row',

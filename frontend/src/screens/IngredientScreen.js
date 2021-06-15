@@ -6,20 +6,41 @@ import { ImageHeaderScrollView, TriggeringView } from 'react-native-image-header
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+import { PieChart } from "react-native-chart-kit";
+
 const MIN_HEIGHT = Platform.OS === 'ios' ? 90 : 55;
 const MAX_HEIGHT = 350;
 
 export function IngredientScreen({route, navigation}) {
     const [ingrediente, setIngrediente] = useState([]);
+    const [data, setData] = useState([]);
     
     const auth = useAuth();
     const navTitleView = useRef(null);
 
     useEffect(() => {
+      setData([]);
       const callApi = async () => {
           await apiCalls.getApiCall(`ingredientSpoonacular/${route.params.id}`, auth.authData.token)
           .then( json => {
             setIngrediente(json);
+            let i = 0;
+            json.nutrition.nutrients.map(o => {
+              if (o.unit === 'g' ) {
+                const newData = {
+                  name: `g ${o.title}`,
+                  population: o.amount,
+                  color: '#' + Math.random().toString(16).substr(-6),
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 10
+                }
+                setData(data =>[...data, newData]);
+              }
+              i++;
+              if ( i == 10 ){
+                i = 0;
+              }
+            });
           })
       }
       callApi();
@@ -37,7 +58,12 @@ export function IngredientScreen({route, navigation}) {
         await apiCalls.getApiCall(`ingredient/${route.params.id}` , auth.authData.token)
           .then( json => {
             if ( json.data.length > 0 ) {
-              Alert.alert('Ya haz guardado este ingrediente');
+              // Alert.alert('Ya haz guardado este ingrediente');
+              // console.log(json.data[0]._id);
+              apiCalls.deleteApiCall(`ingredient/${json.data[0]._id}` , auth.authData.token)
+                .then( json => {
+                  Alert.alert('Se ha eliminado de tus ingredientes!!');
+              }) 
             } else {
               apiCalls.postApiCall(`ingredient`, body , auth.authData.token)
                 .then( json => {
@@ -95,22 +121,36 @@ export function IngredientScreen({route, navigation}) {
           <View style={styles.categories}>
               <View style={styles.categoryContainer}>
                 <FontAwesome name="tag" size={16} color="#fff" />
-                <Text style={styles.category}>Categorías</Text>
-              </View>
-            
-          </View>
-          <Text style={styles.sectionContent}>{/* {ingrediente.categoryPath} */}Hola</Text>
-        </View>
-
-        <View style={[styles.section, styles.sectionLarge]}>
-          <View style={styles.categories}>
-              <View style={styles.categoryContainer}>
-                <FontAwesome name="tag" size={16} color="#fff" />
                 <Text style={styles.category}>Más información</Text>
               </View>
             
           </View>
-          <Text style={styles.sectionContent}>{ingrediente.name}</Text>
+          {ingrediente.categoryPath && ingrediente.categoryPath.length > 0 ?
+            <Text style={styles.sectionContent}>
+              Aisle: {ingrediente.aisle}{"\n"}
+              Cost: {ingrediente.estimatedCost.value} {ingrediente.estimatedCost.unit}{"\n"}
+              Consistency: {ingrediente.consistency}{"\n"}
+              {ingrediente.nutrition.nutrients[0].title}: {ingrediente.nutrition.nutrients[0].amount} {ingrediente.nutrition.nutrients[0].unit}
+            </Text>
+          : 
+            <Text style={styles.sectionContent} >Cargando...</Text>
+          }
+        </View>
+        <View style={[styles.section, styles.sectionLarge]}>
+          <View style={styles.categories}>
+              <View style={styles.categoryContainer}>
+                <FontAwesome name="tag" size={16} color="#fff" />
+                <Text style={styles.category}>Categorías</Text>
+              </View>
+            
+          </View>
+          {ingrediente.categoryPath && ingrediente.categoryPath.length > 0 ? 
+              ingrediente.categoryPath.map((categoria) => (
+                <Text style={styles.sectionContent}  key={categoria}>{categoria}</Text>
+              ))
+            : 
+            <Text style={styles.sectionContent} >Cargando...</Text>
+          }
         </View>
         <View style={[styles.section, styles.sectionLarge]}>
           <View style={styles.categories}>
@@ -120,7 +160,32 @@ export function IngredientScreen({route, navigation}) {
               </View>
             
           </View>
-          <Text style={styles.sectionContent}>Aqui van las graficas</Text>
+          <View>
+            
+            <PieChart
+              data={data}
+              width={Dimensions.get('window').width - 16}
+              height={220}
+              chartConfig={{
+                backgroundColor: '#fff',
+                backgroundGradientFrom: '#fff',
+                backgroundGradientTo: '#fff',
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+              }}
+              style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+              accessor="population"
+              backgroundColor="transparent"
+              paddingLeft="15"
+              absolute //for the absolute number remove if you want percentage
+            />
+          </View>
         </View>
       </ImageHeaderScrollView>
     </View>

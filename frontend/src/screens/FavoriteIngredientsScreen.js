@@ -7,50 +7,40 @@ import {
   StyleSheet, 
   Text, 
   TouchableOpacity,
-  TextInput,
-  // Button,
-  TouchableHighlight,
+  RefreshControl,
+  ScrollView
 } from 'react-native';
 import {useAuth} from '../contexts/Auth';
 import apiCalls from '../utils/apiCalls';
-import { Icon } from 'react-native-elements'
 
-export function SearchRecipesScreen({route, navigation}) {
-    const [recetas, setRecetas] = useState([]);
-    const [receta, setReceta] = useState([]);
-    //route.params.similares
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
+export function FavoriteIngredientsScreen({navigation}) {
+    const [ingredientes, setIngredientes] = useState([]);
+    const [refreshing, setRefreshing] = React.useState(false);
+
     const auth = useAuth();
 
-    const handleRecipeChange = (receta) => {
-      setReceta(receta);
-    } 
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+       apiCalls.getApiCall(`ingredients`, auth.authData.token)
+          .then( json => {
+            setIngredientes(json.data);
+          })
+      wait(2000).then(() => setRefreshing(false));
+    }, []);
 
     useEffect(() => {
-      
-      if (route.params.similares) {
         const callApi = async () => {
-          await apiCalls.getApiCall(`similarSpoonacular/${route.params.id}`, auth.authData.token)
+          await apiCalls.getApiCall(`ingredients`, auth.authData.token)
           .then( json => {
-            setRecetas(json);
+            setIngredientes(json.data);
           })
         }
         callApi();
-      }
     }, []);
-
-    const lookRecipes = () => {
-      if (receta) {
-        setRecetas(null);
-        const callApi = async () => {
-          await apiCalls.getApiCall(`buscarSpoonacular/${receta}` , auth.authData.token)
-            .then( json => {
-              setRecetas(json.results);
-            })
-        }
-        callApi();
-      }
-      
-    }
 
     const Item = ({ item }) => (
 
@@ -58,25 +48,23 @@ export function SearchRecipesScreen({route, navigation}) {
       <View style={styles.cardsWrapper}>
         <TouchableOpacity 
           onPress={()=>{
-            console.log('El id -> ' + item.id);
-            console.log(item);
-            // navigation.navigate(RecipeScreen);
+            console.log('El id -> ' + item.id_ingredient);
             navigation.navigate(
-              'RecipeScreen',
-              { id:  item.id},
+              'IngredientScreen',
+              { id:  item.id_ingredient},
             );
           }}
           style={styles.card}
         >
           <View style={styles.cardImgWrapper}>
             <Image
-              source={{uri: `https://spoonacular.com/recipeImages/${item.id}-556x370.jpg`}}
+              source={{uri: `https://spoonacular.com/cdn/ingredients_500x500/${item.image}`}}
               resizeMode="cover"
               style={styles.cardImg}
             />
           </View>
           <View style={styles.cardInfo}>
-            <Text style={styles.cardTitle}>{item.title}</Text>
+            <Text style={styles.cardTitle}>{item.name}</Text>
             
           </View>
         </TouchableOpacity>
@@ -89,10 +77,9 @@ export function SearchRecipesScreen({route, navigation}) {
     );
   
     return (
-      
       <SafeAreaView style={styles.container}>
+          
           <>
-            
             <View style={styles.cardsWrapper}>
             <Text
                     style={{
@@ -101,54 +88,48 @@ export function SearchRecipesScreen({route, navigation}) {
                     fontWeight: 'bold',
                     color: '#333',
                   }}>
-                    Buscar Recetas
+                    Mis ingredientes
                   </Text>
-
-              <View style={{flexDirection:'row'}}>
-                <View style={{ flex: 2 }}>
-                  
-                  </View>
-                <View>
-                  <TextInput
-                      style={styles.busqueda}
-                      placeholder="Busqueda..." 
-                      onChangeText={handleRecipeChange} 
-                      style={{marginVertical:20}}
-                      autoCapitalize='none'
-                      />
-                </View>
-                <TouchableHighlight 
-                  style={styles.icono}
-                  onPress={lookRecipes}
-                  underlayColor = 'transparent'>
-                    <View>                        
-                      <Icon name="search" size = {20} color = "#4285F4" />
-                    </View>
-                </TouchableHighlight>
-              </View>
-
-              
             </View> 
             </>
-            { recetas ? (
+
+            { ingredientes ? (
                 <>
                 <FlatList
                     // si pones data={recetas} tambien hace lo mismo pero marca warning, no se por que jaja que raro 
-                    data={Object.values(recetas)} 
+                    data={Object.values(ingredientes)} 
                     renderItem={renderItem}
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => item.id_ingredient.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            enabled={true}
+                        />
+                        }
                     ListEmptyComponent={
-                      <Text >No se encontraron recetas</Text>
+                        <Text >Aún no haz guardado ningun ingrediente</Text>
                     } 
                 />
                 </>
             ) : (
                 <>
-                <Text color="#ff345a">No se encontraron recetas</Text>
+                <ScrollView
+                    // contentContainerStyle={styles.scrollView}
+                    refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        enabled={true}
+                    />
+                    }
+                >
+                    <Text >No se encontraron ingredientes</Text>
+                </ScrollView>
                 </>
             )}
-      </SafeAreaView>
-
+        
+      </SafeAreaView>     
     );
 }
 
